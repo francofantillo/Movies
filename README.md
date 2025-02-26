@@ -1,5 +1,5 @@
-# Stock-App
-A demo app for retrieving stock data.
+# Movies
+A demo app for retrieving movie data.
 
 ## 1. Setup
 

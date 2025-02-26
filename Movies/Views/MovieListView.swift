@@ -15,9 +15,7 @@ struct MovieListView: View {
                 
                 VStack {
                     SearchBar(searchString: viewModel.searchStringBinding)
-                    Spacer()
                     MovieList(viewModel: viewModel)
-                    Spacer()
                 }
             }
             .navigationTitle("Movies")

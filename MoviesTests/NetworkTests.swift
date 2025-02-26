@@ -8,7 +8,7 @@
 import XCTest
 import Foundation
 import SwiftUI
-@testable import NasaApp
+@testable import Movies
 
 final class NetworkTests: XCTestCase {
 
@@ -67,6 +67,7 @@ final class NetworkTests: XCTestCase {
     }
     
     func test_get_should_return_data() async {
+        
         let expectedData = "{}".data(using: .utf8)
         
         sessionSuccess.nextData = expectedData
@@ -75,12 +76,6 @@ final class NetworkTests: XCTestCase {
     }
     
     func test_get_should_return_apiError400() async {
-    
-        let errorData = APIErrorMessage(error: true, reason: "Test Error")
-        let encoder = JSONEncoder()
-        let encoded = try! encoder.encode(errorData)
-        
-        sessionFail400.nextData = encoded
         
         do {
             _ = try await httpClientFail400.getData(url: URL(string: "http://mockurl")!)
@@ -95,12 +90,6 @@ final class NetworkTests: XCTestCase {
     }
     
     func test_get_should_return_apiError500() async {
-    
-        let errorData = APIErrorMessage(error: true, reason: "Test Error")
-        let encoder = JSONEncoder()
-        let encoded = try! encoder.encode(errorData)
-        
-        sessionFail500.nextData = encoded
         
         do {
             _ = try await httpClientFail500.getData(url: URL(string: "http://mockurl")!)

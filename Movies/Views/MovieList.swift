@@ -15,8 +15,16 @@ struct MovieList: View {
         if viewModel.movies.isEmpty {
             EmptyStateView()
         } else {
-            List(viewModel.movies) { movie in
-                MovieRow(movie: movie, image: viewModel.image(for: movie))
+            List {
+                ForEach(viewModel.movies) { movie in
+                    MovieRow(movie: movie, image: viewModel.image(for: movie))
+                        .onAppear(){
+                            if (viewModel.movies.last == movie){
+                                
+                                Task { await viewModel.appendMovies() }
+                            }
+                        }
+                }
             }
             .listRowSpacing(16.0)
         }

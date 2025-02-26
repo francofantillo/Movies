@@ -8,7 +8,7 @@ struct MovieResponse: Decodable {
     }
 }
 
-struct Movie: Codable, Comparable, Hashable, Identifiable {
+struct Movie: Codable, Comparable, Hashable, Identifiable, Equatable {
     
     var id: String
     var poster: String

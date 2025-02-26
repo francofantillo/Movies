@@ -8,6 +8,7 @@ class MovieViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var searchString: String = ""
     @Published var images: [String: UIImage] = [:]
+    @Published var currentPage: Int = 1
     
     private var errorHandling: ErrorHandling
     let dataService: DataService
@@ -23,33 +24,47 @@ class MovieViewModel: ObservableObject {
             set: { newValue in
                 guard self.searchString != newValue else { return }
                 self.searchString = newValue
+                self.currentPage = 1
+                self.movies = []
 
                 Task {
-                    await self.searchMovies(searchString: newValue)
+                    await self.setMovies(searchString:newValue)
                 }
             }
         )
     }
 
-    func searchMovies(searchString: String) async {
-        guard !searchString.isEmpty else { return }
+    func searchMovies(searchString: String) async -> [Movie] {
+        guard !searchString.isEmpty else { return [] }
         
         isLoading = true
         defer { isLoading = false }
         
         do {
-            let fetchedMovies: MovieResponse = try await dataService.search(searchString: searchString)
-            self.movies = fetchedMovies.movies
+            let fetchedMovies: MovieResponse = try await dataService.search(searchString: searchString, page: currentPage)
             await loadImages(for: fetchedMovies.movies)
+            return fetchedMovies.movies
+            
         } catch let apiError as APIErrors {
-            
-            self.movies = []
             errorHandling.handleAPIErrorWithToast(error: apiError)
-            
         } catch {
-            self.movies = []
             errorHandling.handleErrorWithToast(error: error)
         }
+        return []
+    }
+
+    func appendMovies() async {
+        
+        let newMovies = await searchMovies(searchString: searchString)
+        movies.append(contentsOf: newMovies)
+        currentPage += 1
+    }
+    
+    private func setMovies(searchString: String) async {
+        
+        let newMovies = await searchMovies(searchString: searchString)
+        movies = newMovies
+        currentPage += 1
     }
 
     private func loadImages(for movies: [Movie]) async {

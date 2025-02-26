@@ -1,7 +1,7 @@
 import Foundation
 
 protocol DataServiceProtocol {
-    func search<T: Decodable>(searchString: String) async throws -> [T]
+    func search<T: Decodable>(searchString: String, page: Int) async throws -> [T]
     func getImageData(url: URL) async throws -> Data
 }
 
@@ -14,9 +14,9 @@ class DataService: DataServiceProtocol {
         self.client = client
     }
 
-    func search<T: Decodable>(searchString: String) async throws -> T {
+    func search<T: Decodable>(searchString: String, page: Int) async throws -> T {
         let config = APIConfig.production
-        let endpoint = APIEndpoint.search(apiKey: apiKey, searchString: searchString)
+        let endpoint = APIEndpoint.search(apiKey: apiKey, searchString: searchString, page: page)
         
         guard let url = endpoint.url(with: config) else {
             throw APIErrors.invalidRequestError("URL not valid")

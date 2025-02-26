@@ -1,4 +1,3 @@
-
 import Foundation
 
 
@@ -35,7 +34,7 @@ enum APIConfig {
 
 enum APIEndpoint {
     
-    case search(apiKey: String, searchString: String)
+    case search(apiKey: String, searchString: String, page: Int)
 
     func url(with config: APIConfig) -> URL? {
         var components = URLComponents()
@@ -56,10 +55,11 @@ enum APIEndpoint {
 
     private var queryItems: [URLQueryItem]? {
         switch self {
-        case .search(let apiKey, let searchString):
+        case .search(let apiKey, let searchString, let page):
             return [
                 URLQueryItem(name: "apikey", value: apiKey),
-                URLQueryItem(name: "s", value: searchString)
+                URLQueryItem(name: "s", value: searchString),
+                URLQueryItem(name: "page", value: String(page))
             ]
         }
     }

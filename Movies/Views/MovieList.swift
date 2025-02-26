@@ -1,5 +1,12 @@
 import SwiftUI
 
+enum UIConfig: CGFloat {
+    case thumbnailWidth = 50
+    case thumbnailHeight = 75
+    case cornerRadius = 8
+    case filmSize = 100
+}
+
 struct MovieList: View {
     
     @ObservedObject var viewModel: MovieViewModel
@@ -10,7 +17,7 @@ struct MovieList: View {
                 Image(systemName: "film")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 100, height: 100)
+                    .frame(width: UIConfig.filmSize.rawValue, height: UIConfig.filmSize.rawValue)
                     .foregroundColor(.gray)
                 Text("No movies found")
                     .font(.headline)
@@ -24,14 +31,14 @@ struct MovieList: View {
                         Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 75)
-                            .cornerRadius(8)
+                            .frame(width: UIConfig.thumbnailWidth.rawValue, height: UIConfig.thumbnailHeight.rawValue)
+                            .cornerRadius(UIConfig.cornerRadius.rawValue)
                     } else {
                         Image(systemName: "photo")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 75)
-                            .cornerRadius(8)
+                            .frame(width: UIConfig.thumbnailWidth.rawValue, height: UIConfig.thumbnailHeight.rawValue)
+                            .cornerRadius(UIConfig.cornerRadius.rawValue)
                     }
                     VStack(alignment: .leading) {
                         Text(movie.title)

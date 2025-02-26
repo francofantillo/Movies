@@ -24,7 +24,6 @@ class MovieViewModel: ObservableObject {
             set: { newValue in
                 guard self.searchString != newValue else { return }
                 self.searchString = newValue
-                self.currentPage = 1
                 self.movies = []
 
                 Task {
@@ -61,8 +60,9 @@ class MovieViewModel: ObservableObject {
         currentPage += 1
     }
     
-    private func setMovies(searchString: String) async {
+    func setMovies(searchString: String) async {
         
+        self.currentPage = 1
         let newMovies = await searchMovies(searchString: searchString)
         movies = newMovies
         currentPage += 1

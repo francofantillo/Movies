@@ -26,6 +26,9 @@ struct MovieList: View {
                         }
                 }
             }
+            .refreshable {
+                Task { await viewModel.setMovies(searchString: viewModel.searchString) }
+            }
             .listRowSpacing(16.0)
         }
     }

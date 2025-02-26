@@ -23,12 +23,14 @@ struct APIErrorMessage: Codable {
         try container.encode(message, forKey: .error)
     }
 }
+
 enum APIErrors: Error {
     case invalidRequestError(String)
     case transportError(String)
     case invalidResponseError
     case validationError(String)
     case serverError(String)
+    case tooManyResultsError
     case unknownError
 
     var localizedDescription: String {
@@ -43,6 +45,8 @@ enum APIErrors: Error {
             return "Validation error: \(message)"
         case .serverError(let message):
             return "Server error: \(message)"
+        case .tooManyResultsError:
+            return "Enter at least three characters to perform search."
         case .unknownError:
             return "An unknown error occurred."
         }

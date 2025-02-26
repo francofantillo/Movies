@@ -56,49 +56,60 @@ class HttpClient {
     }
     
     private func checkResponse(response: URLResponse?, data: Data?) -> Result<Data, APIErrors> {
-        
         guard let urlResponse = response as? HTTPURLResponse else {
             return .failure(APIErrors.invalidResponseError)
         }
 
         if (200..<300) ~= urlResponse.statusCode {
-            guard let data = data else { return .failure(APIErrors.validationError("Unable to decode API error.")) }
-            
+            return handleSuccessResponse(data: data)
+        } else {
+            return handleErrorResponse(response: urlResponse, data: data)
+        }
+    }
+
+    private func handleSuccessResponse(data: Data?) -> Result<Data, APIErrors> {
+        guard let data = data else {
+            return .failure(APIErrors.validationError("Unable to decode API error."))
+        }
+        
+        if let dataString = String(data: data, encoding: .utf8) {
+            print("Response Data String: \(dataString)")
+        }
+        
+        if let apiError = try? JSONDecoder().decode(APIErrorMessage.self, from: data), !apiError.response {
+            if apiError.message == "Too many results." {
+                return .failure(APIErrors.tooManyResultsError)
+            }
+            return .failure(APIErrors.invalidRequestError(apiError.message ?? "Unknown"))
+        }
+        
+        return .success(data)
+    }
+
+    private func handleErrorResponse(response: HTTPURLResponse, data: Data?) -> Result<Data, APIErrors> {
+        guard let data = data else {
+            return .failure(APIErrors.validationError("Unable to decode API error."))
+        }
+        
+        do {
             if let dataString = String(data: data, encoding: .utf8) {
                 print("Response Data String: \(dataString)")
             }
-            do {
-                let apiError = try JSONDecoder().decode(APIErrorMessage.self, from: data)
-                if apiError.response == false {
-                    return .failure(APIErrors.invalidRequestError(apiError.message ?? "Unknown"))
-                }
-            } catch {
-                return .failure(APIErrors.validationError("Unable to decode API error."))
-            }
-            
-            return .success(data)
-        } else {
-            guard let data = data else { return .failure(APIErrors.validationError("Unable to decode API error.")) }
-            
-            do {
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print("Response Data String: \(dataString)")
-                }
 
-                let apiError = try JSONDecoder().decode(APIErrorMessage.self, from: data)
-                
-                if (400..<499) ~= urlResponse.statusCode {
-                    return .failure(APIErrors.transportError("Failed with status code: \(urlResponse.statusCode). Reason: \(apiError.message ?? "Unknown")"))
-                }
-                
-                if 500 <= urlResponse.statusCode {
-                    return .failure(APIErrors.serverError("Failed with status code: \(urlResponse.statusCode). Reason: \(apiError.message ?? "Unknown")"))
-                }
-                
-            } catch {
-                return .failure(APIErrors.validationError("Unable to decode API error."))
+            let apiError = try JSONDecoder().decode(APIErrorMessage.self, from: data)
+            
+            if (400..<499) ~= response.statusCode {
+                return .failure(APIErrors.transportError("Failed with status code: \(response.statusCode). Reason: \(apiError.message ?? "Unknown")"))
             }
+            
+            if 500 <= response.statusCode {
+                return .failure(APIErrors.serverError("Failed with status code: \(response.statusCode). Reason: \(apiError.message ?? "Unknown")"))
+            }
+            
+        } catch {
+            return .failure(APIErrors.validationError("Unable to decode API error."))
         }
+        
         return .failure(APIErrors.invalidResponseError)
     }
 }

@@ -23,8 +23,6 @@ class MovieViewModel: ObservableObject {
             set: { newValue in
                 guard self.searchString != newValue else { return }
                 self.searchString = newValue
-                
-                //guard self.searchString.count >= 3 else { return }
 
                 Task {
                     await self.searchMovies(searchString: newValue)
@@ -44,8 +42,12 @@ class MovieViewModel: ObservableObject {
             self.movies = fetchedMovies.movies
             await loadImages(for: fetchedMovies.movies)
         } catch let apiError as APIErrors {
+            
+            self.movies = []
             errorHandling.handleAPIErrorWithToast(error: apiError)
+            
         } catch {
+            self.movies = []
             errorHandling.handleErrorWithToast(error: error)
         }
     }

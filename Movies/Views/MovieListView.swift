@@ -9,14 +9,13 @@ struct MovieListView: View {
         NavigationView {
             ZStack {
                 
-                if viewModel.isLoading {
-                    LoadingView()
-                }
-                
                 VStack {
                     SearchBar(searchString: viewModel.searchStringBinding)
                     MovieList(viewModel: viewModel)
                 }
+                
+                LoadingView(isLoading: $viewModel.isLoading)
+                
             }
             .navigationTitle("Movies")
         }

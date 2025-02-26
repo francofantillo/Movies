@@ -50,6 +50,7 @@ class MovieViewModel: ObservableObject {
         } catch {
             errorHandling.handleErrorWithToast(error: error)
         }
+        
         return []
     }
 

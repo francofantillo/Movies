@@ -10,6 +10,7 @@ enum UIConfig: CGFloat {
 struct MovieList: View {
     
     @ObservedObject var viewModel: MovieViewModel
+    @EnvironmentObject var navPath: NavigationObject
 
     var body: some View {
         if viewModel.movies.isEmpty {
@@ -24,6 +25,9 @@ struct MovieList: View {
                                 Task { await viewModel.appendMovies() }
                             }
                         }
+//                        .onTapGesture {
+//                            navPath.path.append(Route.movieDetails(movie))
+//                        }
                 }
             }
             .refreshable {
@@ -63,6 +67,7 @@ struct MovieRow: View {
             Spacer()
             DetailsButton()
         }
+        
     }
 }
 
@@ -120,9 +125,10 @@ struct MovieDetails: View {
 }
 
 struct DetailsButton: View {
+    
     var body: some View {
         Button(action: {
-            // Button action here
+            
         }) {
             HStack {
                 Text("Details")

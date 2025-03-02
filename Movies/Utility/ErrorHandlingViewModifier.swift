@@ -7,6 +7,13 @@ struct ErrorAlert: Identifiable {
     var dismissAction: (() -> Void)?
 }
 
+// For global error handling
+extension View {
+    func withErrorHandling() -> some View {
+        modifier(HandleErrorsByShowingAlertViewModifier())
+    }
+}
+
 class ErrorHandling: ObservableObject {
     
     @Published var currentAlert: ErrorAlert?

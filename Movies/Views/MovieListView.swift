@@ -19,6 +19,7 @@ struct MovieListView: View {
             }
             .navigationTitle("Movies")
         }
+        .withErrorHandling()
     }
 }
 

@@ -7,7 +7,7 @@ protocol DataServiceProtocol {
 
 class DataService: DataServiceProtocol {
 
-    let client: HttpClient
+    private let client: HttpClient
     private let apiKey = "684a81cf"
     
     init(client: HttpClient) {

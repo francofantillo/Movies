@@ -10,8 +10,8 @@ class MovieViewModel: ObservableObject {
     @Published var images: [String: UIImage] = [:]
     @Published var currentPage: Int = 1
     
-    private var errorHandling: ErrorHandling
-    let dataService: DataService
+    private let errorHandling: ErrorHandling
+    private let dataService: DataService
 
     init(errorHandling: ErrorHandling, dataService: DataService = DataService(client: HttpClient(session: URLSession.shared))) {
         self.dataService = dataService
@@ -33,7 +33,7 @@ class MovieViewModel: ObservableObject {
         )
     }
 
-    func searchMovies(searchString: String) async -> [Movie] {
+    private func searchMovies(searchString: String) async -> [Movie] {
         guard !searchString.isEmpty else { return [] }
         
         isLoading = true

@@ -3,7 +3,6 @@ import SwiftUI
 struct MovieListView: View {
     
     @ObservedObject var viewModel: MovieViewModel
-    @EnvironmentObject var errorHandling: ErrorHandling
 
     var body: some View {
         NavigationView {

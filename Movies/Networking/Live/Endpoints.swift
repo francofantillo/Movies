@@ -7,6 +7,7 @@ enum Endpoint: String {
 
 
 enum APIConfig {
+    
     case production
     case staging
     case development

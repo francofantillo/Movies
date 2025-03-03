@@ -10,10 +10,10 @@ struct MovieResponse: Decodable {
 
 struct Movie: Codable, Comparable, Hashable, Identifiable, Equatable {
     
-    var id: String
-    var poster: String
-    var title: String
-    var yearOfRelease: Int
+    let id: String
+    let poster: String
+    let title: String
+    let yearOfRelease: Int
 
     // Conformance to Comparable
     static func < (lhs: Movie, rhs: Movie) -> Bool {
